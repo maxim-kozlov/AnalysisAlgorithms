@@ -338,3 +338,15 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+
+*.tex?*
+*.aux
+*.synctex.gz
+*.bbl
+*.bst
+*.blg
+*.fdb*
+*.toc
+*.fls
+*.out
+*.layout
