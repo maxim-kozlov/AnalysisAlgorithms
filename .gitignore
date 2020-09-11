@@ -344,9 +344,11 @@ healthchecksdb
 *.synctex.gz
 *.bbl
 *.bst
+*.bcf
 *.blg
 *.fdb*
 *.toc
 *.fls
 *.out
 *.layout
+*.pdf
