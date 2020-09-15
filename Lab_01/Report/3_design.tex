@@ -4,41 +4,13 @@
     и опредены способы тестования.
     
     \section{Разработка алгоритмов}
-        Ниже представлены схемы алгоритмов поиска растояния Левенштейна: \begin{enumerate}
+        Ниже будут представлены схемы алгоритмов поиска растояния Левенштейна: \begin{enumerate}
             \item нерекурсивного с заполнением матрицы (\ref{schema:matr:Levenstein});
             \item рекурсивного без заполнения матрицы (\ref{schema:rec:Levenstein});
             \item рекурсивного с заполнением матрицы (\ref{schema:rec-matr:Levenstein});
         \end{enumerate}
 
         и схема алгоритма поиска растояния Дамерау-Левенштейна (\ref{schema:matr:Dameray-Levenstein}).
-
-    \begin{figure}[h!]
-        \centering
-        \includegraphics[scale=0.1]{EmblemBMSTU}
-        \caption{Схема нерекурсивного поиска с заполнением матрицы}
-        \label{schema:matr:Levenstein}
-    \end{figure}
-
-    \begin{figure}[h!]
-        \centering
-        \includegraphics[scale=0.1]{EmblemBMSTU}
-        \caption{Схема рекурсивого поиска без заполнения матрицы}
-        \label{schema:rec:Levenstein}
-    \end{figure}
-
-    \begin{figure}[h!]
-        \centering
-        \includegraphics[scale=0.1]{EmblemBMSTU}
-        \caption{Схема рекурсивого поиска с заполнением матрицы}
-        \label{schema:rec-matr:Levenstein}
-    \end{figure}
-
-    \begin{figure}[h!]
-        \centering
-        \includegraphics[scale=0.1]{EmblemBMSTU}
-        \caption{Схема поиска р. Дамерау-Левенштейна}
-        \label{schema:matr:Dameray-Levenstein}
-    \end{figure}
 
     \section{Требования к функциональности ПО}
         В данной работе требуется обеспечить минимальную функциональность консольного приложения:
@@ -62,5 +34,33 @@
     Тестирование ПО будет проводиться методом чёрного ящика. Необходимо проверить работу системы 
     на тривиальных случаях (одна или обе строки пустые, строки полностью совпадают) 
     и несколько нетривальных случаев.
+
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[scale=0.1]{LevMatr}
+        \caption{Схема нерекурсивного поиска с заполнением матрицы}
+        \label{schema:matr:Levenstein}
+    \end{figure}
+
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[scale=0.1]{LevRec}
+        \caption{Схема рекурсивого поиска без заполнения матрицы}
+        \label{schema:rec:Levenstein}
+    \end{figure}
+
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[scale=0.1]{DamLevMatr}
+        \caption{Схема рекурсивого поиска с заполнением матрицы}
+        \label{schema:rec-matr:Levenstein}
+    \end{figure}
+
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[scale=0.1]{LevRecMatr}
+        \caption{Схема поиска р. Дамерау-Левенштейна}
+        \label{schema:matr:Dameray-Levenstein}
+    \end{figure}
 
 \newpage
