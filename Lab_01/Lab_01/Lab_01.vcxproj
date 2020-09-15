@@ -140,6 +140,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Lab_01.cpp" />
+    <ClCompile Include="lib_distance_word.cpp" />
+    <ClCompile Include="lib_test.cpp" />
+    <ClCompile Include="lib_test_time.cpp" />
+    <ClCompile Include="Matrix.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="lib_distance_word.h" />
+    <ClInclude Include="lib_test.h" />
+    <ClInclude Include="lib_test_time.h" />
+    <ClInclude Include="Matrix.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -2,101 +2,94 @@
 //
 
 #include <iostream>
-#include <Windows.h>
-#include <profileapi.h>
-#include <stdlib.h>
-#include <time.h>
+#include "lib_test_time.h"
+#include "lib_distance_word.h"
+#include "lib_test.h"
+#include <vector>
 
-// ахтунг динамическая память
-char* getRandomString(std::size_t len)
-{
-	char* str = new char[len + 1];
-	for (size_t i = 0; i < len; i++)
-		str[i] = char(('z' - 'a') * rand() / (double)RAND_MAX) + 'a';
-	str[len] = 0;
-	return str;
-}
+using namespace std;
 
-std::size_t _getDL(const char* s1, size_t i, const char* s2, size_t j)
+vector<double> TestFunc(funcDL getDL, size_t step, size_t max_len, double timeout = 60000)
 {
-	std::size_t d;
-	if (i == 0)
+	auto time = vector<double>(ceil(max_len / (double)step) + 1, -1);
+	for (size_t len = 1, i = 0; len < max_len; len += step, i++)
 	{
-		if (j == 0)
-			d = 0;
-		else
-			d = j;
+		time[i] = getTime(getDL, len, len, 100);
+		if (time[i] > timeout)
+			return time;
 	}
-	else
-	{
-		if (j == 0)
-			d = i;
-		else
-		{
-			d = min(min(
-				_getDL(s1, i, s2, j-1) + 1,
-				_getDL(s1, i-1, s2, j) + 1),
-				_getDL(s1, i-1, s2, j-1) + (s1[i-1] != s2[j-1]));
-		}
-	}
-	return d;
-}
-std::size_t getDLevRec(const char* s1, const char* s2)
-{
-	std::size_t i = strlen(s1);
-	std::size_t j = strlen(s2);
-	return _getDL(s1, i, s2, j);
-}
-
-
-using funcDL = std::size_t(*)(const char*, const char*);
-double getTime(funcDL getDL, const char* s1, const char* s2, int samples = 10)
-{
-	std::cout << "s1: " << s1 << " (len: " << strlen(s1) << ")" << std::endl;
-	std::cout << "s2: " << s2 << " (len: " << strlen(s2) << ")" << std::endl;
-	LARGE_INTEGER StartingTime, EndingTime, ElapsedMicroseconds;
-	LARGE_INTEGER Frequency;
-
-	QueryPerformanceFrequency(&Frequency);
-	QueryPerformanceCounter(&StartingTime);
-
-	// Activity to be timed
-	for (size_t i = 0; i < samples; i++)
-	{
-		getDL(s1, s2);
-	}
-
-	QueryPerformanceCounter(&EndingTime);
-	ElapsedMicroseconds.QuadPart = EndingTime.QuadPart - StartingTime.QuadPart;
-
-	ElapsedMicroseconds.QuadPart *= 1000000;
-	ElapsedMicroseconds.QuadPart /= (Frequency.QuadPart * samples);
-	return ElapsedMicroseconds.QuadPart;
-}
-
-double getTime(funcDL getDL, std::size_t n, std::size_t m)
-{
-	char* s1 = getRandomString(n), *s2 = getRandomString(m);
-	double time = getTime(getDLevRec, s1, s2);
-	delete s1;  delete s2;
 	return time;
 }
 
-int main()
+int TestMode(size_t step, size_t max_len)
 {
-	srand(NULL);
+	std::cout << "run testing..." << std::endl;
+	
+	char buffer[150];
+	const char* line = "------------------------------------------------------------------------------------------------------------\n";
+	const char* format = "| %-8d | %-21.3f | %-21.3f | %-21.3f | %-21.3f |\n";
 
-	std::cout << getDLevRec("КИТ", "СКАТ") << std::endl;	
-	std::cout << "time: " << getTime(getDLevRec, 6, 6) << "ms" << std::endl;
+	sprintf_s(buffer, "| %-5s | %-21s | %-21s | %-21s | %-21s |\n", "len(str)", "Dam-Lev no rec", "Lev no rec with matr", "Lev rec with matr", "Lev rec without matr");
+	std::cout << line << "           |                                            time (ms)                                          |\n" << line;
+	std::cout << buffer << line;
+
+	auto timeDamLevMatr = TestFunc(getDamLevMatr, step, max_len);
+	auto timeLevMatr = TestFunc(getLevMatr, step, max_len);
+	auto timeLevRecMatr = TestFunc(getLevRecMatr, step, max_len);
+	auto timeLevRec = TestFunc(getLevRec, step, _min(11u, max_len));
+	
+	for (size_t len = 1, i = 0; len < max_len; len += step, i++)
+	{
+		sprintf_s(buffer, format, len, timeDamLevMatr[i], timeLevMatr[i], timeLevRecMatr[i], i < timeLevRec.size() ? timeLevRec[i] : -1);
+		std::cout << buffer << line;
+	}
+
+	return 0;
 }
 
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
+std::string InputString(std::string message)
+{
+	std::string buf;
+	std::cout << message;
+	std::getline(std::cin, buf);
+	return buf;
+}
 
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
+int InputMode()
+{
+	std::string buf1 = InputString("Input s1: ");
+	std::string buf2 = InputString("Input s2: ");
+	const char* s1 = buf1.c_str(), * s2 = buf2.c_str();
+
+	size_t n = buf1.length(), m = buf2.length();
+
+	Matrix matr = getMatrixLev(s1, s2);
+	std::cout << "Lev no rec with matr: " << matr[n][m] << std::endl;
+	std::cout << matr << std::endl;
+
+	matr = getMatrixLevRec(s1, s2);
+	std::cout << "Lev rec with matr   : " << matr[n][m] << std::endl;
+	std::cout << matr << std::endl;
+
+	matr = getMatrixDamLev(s1, s2);
+	std::cout << "Dam-Lev no rec      : " << matr[n][m] << std::endl;
+	std::cout << matr << std::endl;
+
+	std::cout << "Lev rec without matr: " << getLevRec(s1, s2) << std::endl;
+
+	return 0;
+}
+
+int main(int argc, char* argv[])
+{
+	int code_error = 0;
+	srand(NULL);
+	if (argc > 1 && !strcmp(argv[1], "-t"))
+		if (argc > 3)
+			code_error = TestMode(atoi(argv[2]), atoi(argv[3]));
+		else
+			code_error = TestMode(50, 1000);
+	else
+		code_error = InputMode();
+	return code_error;
+}

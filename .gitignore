@@ -352,3 +352,6 @@ healthchecksdb
 *.out
 *.layout
 *.pdf
+Lab_01/Report/report.pdf
+*.xlsx
+*.png
