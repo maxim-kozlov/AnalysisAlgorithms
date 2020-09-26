@@ -6,12 +6,12 @@
     \section{Средства реализации}
         В данной работе используется язык программирования C++, так как
         язык позволяет написать программу, работающую относительно быстро. 
-        Проект выполнен в IDE Visual Studio 2019\cite{visual-studio}
+        Проект выполнен в IDE Visual Studio 2019 \cite{visual-studio}.
 
-        Для замера процессорного времени была использован QueryPerformanceCounter\cite{QueryPerformanceCounter} 
-        из библиотеки WinAPI.
+        Для замера процессорного времени была использована функция QueryPerformanceCounter \cite{QueryPerformanceCounter} 
+        из библиотеки WinAPI, использование которой представлено в листинге \ref{lst:QueryPerformanceCounter}.
 
-        \begin{lstlisting}[language=C++, caption=Функция замера времени]
+        \begin{lstlisting}[language=C++, label=lst:QueryPerformanceCounter, caption=Функция замера времени]
 using funcDL = std::size_t( * )(const char*, const char* );
 double getTime(funcDL getDL, const char* s1, const char* s2, int samples)
 {
@@ -36,12 +36,12 @@ double getTime(funcDL getDL, const char* s1, const char* s2, int samples)
 
     \section{Листинг программы}
         Ниже представлены листинги кода поиска растояния Левенштейна: \begin{enumerate}
-            \item нерекурсивного с заполнением матрицы (\ref{lst:matr:Levenstein});
-            \item рекурсивного без заполнения матрицы (\ref{lst:rec:Levenstein});
-            \item рекурсивного с заполнением матрицы (\ref{lst:rec-matr:Levenstein});
+            \item нерекурсивного с заполнением матрицы (листинг \ref{lst:matr:Levenstein});
+            \item рекурсивного без заполнения матрицы (листинг \ref{lst:rec:Levenstein});
+            \item рекурсивного с заполнением матрицы (листинг \ref{lst:rec-matr:Levenstein});
         \end{enumerate}
         
-        и код функции поиска растояния Дамерау-Левенштейна (\ref{lst:matr:Dameray-Levenstein}).
+        и код функции поиска растояния Дамерау-Левенштейна (листинг \ref{lst:matr:Dameray-Levenstein}).
 
         \begin{lstlisting}[language=C++, label=lst:matr:Levenstein, caption=Функция нерекурсивного поиска с заполнением матрицы]
 std::size_t getLevMatr(const char* s1, const char* s2)
@@ -164,7 +164,13 @@ std::size_t getDamLevMatr(const char* s1, const char* s2)
     
         
     \section{Тестирование}
+        В таблице \ref{table:testing} отображён возможный набор тестов
+        для тестирования методом чёрного ящика, результаты которого, 
+        представленные на рисунке \ref{png:testing:result}, подтверждают
+        прохождение программы перечисленных тестов.
         \begin{table}[]
+            \caption{Тесты проверки корректности программы}
+            \centering
             \begin{tabular}{|c|c|c|c|c|}
             \hline
             № & строка 1 & строка 2 & \begin{tabular}[c]{@{}c@{}}Ожидаемый результат \\ (р.Л, р.Д-Л)\end{tabular} & \begin{tabular}[c]{@{}c@{}}Фактический результат\\ (р.Л, р.Д-Л)\end{tabular} \\ \hline
@@ -173,13 +179,18 @@ std::size_t getDamLevMatr(const char* s1, const char* s2)
             3 & abba     & baab     & 3, 2                                                                        & 3, 2                                                                         \\ \hline
             4 & abcd     & qwer     & 4, 4                                                                        & 4, 4                                                                         \\ \hline
             \end{tabular}
+            \label{table:testing}
         \end{table}
+
         \begin{figure}[h!]
             \centering
             \includegraphics[scale=1.2]{testing.png}
             \caption{Результаты тестирования}
+            \label{png:testing:result}
         \end{figure}
 
-        Все тесты были пройдены.
+    \section{Сравнительный анализ потребляемой памяти}
+        Для проведения анализов будем считать, что размер int - 4 байта,
+        % size_t - 4 байта.
 
 \newpage
