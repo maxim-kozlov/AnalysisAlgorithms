@@ -12,7 +12,7 @@ using namespace std;
 vector<double> TestFunc(funcDL getDL, size_t step, size_t max_len, double timeout = 60000)
 {
 	auto time = vector<double>(ceil(max_len / (double)step) + 1, -1);
-	for (size_t len = 1, i = 0; len < max_len; len += step, i++)
+	for (size_t len = 0, i = 0; len <= max_len; len += step, i++)
 	{
 		time[i] = getTime(getDL, len, len, 100);
 		if (time[i] > timeout)
@@ -36,9 +36,9 @@ int TestMode(size_t step, size_t max_len)
 	auto timeDamLevMatr = TestFunc(getDamLevMatr, step, max_len);
 	auto timeLevMatr = TestFunc(getLevMatr, step, max_len);
 	auto timeLevRecMatr = TestFunc(getLevRecMatr, step, max_len);
-	auto timeLevRec = TestFunc(getLevRec, step, _min(11u, max_len));
+	auto timeLevRec = TestFunc(getLevRec, step, _min<std::size_t>(11u, max_len));
 	
-	for (size_t len = 1, i = 0; len < max_len; len += step, i++)
+	for (size_t len = 0, i = 0; len <= max_len; len += step, i++)
 	{
 		sprintf_s(buffer, format, len, timeDamLevMatr[i], timeLevMatr[i], timeLevRecMatr[i], i < timeLevRec.size() ? timeLevRec[i] : -1);
 		std::cout << buffer << line;
@@ -84,6 +84,7 @@ int main(int argc, char* argv[])
 {
 	int code_error = 0;
 	srand(NULL);
+	TestMode(50, 1000);
 	if (argc > 1 && !strcmp(argv[1], "-t"))
 		if (argc > 3)
 			code_error = TestMode(atoi(argv[2]), atoi(argv[3]));

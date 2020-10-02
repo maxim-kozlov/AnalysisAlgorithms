@@ -1,0 +1,139 @@
+\chapter{Экспериментальный раздел}
+\label{cha:research}
+    В данном разделе будут проведены эксперименты для проведения 
+    сравнительного анализа трёх алгоритмов по затрачиваемому процессорному 
+    времени в зависимости от размеров матриц и чётности / нечётности размеров.
+
+    \section{Сравнительный анализ на основе замеров времени работы алгоритмов}
+        В рамках данного проекта были проведёны следующие эксперименты:
+        \begin{enumerate}
+            \item сравнение времени работы алгоритмов на размерностях матриц 100, 200, 300, 400, 500 (график \ref{graph:test:1})
+            \item сравнение времени работы алгоритмов на размерностях матриц 100, 200, 300, 400, 500 (график \ref{graph:test:1})
+        \end{enumerate}
+        
+        Тестирование проводилось на ноутбуке с процессором
+        Intel(R) Core(TM) i5-7200U CPU 2.50 GHz \cite{processor-i5-7200u}
+        под управлением Windows 10 с 8 Гб оперативной памяти.
+
+    \section{Оценка трудоёмкости алгоритмов умножения матриц}
+
+        \subsection{Стандартный алгоритм}
+            Найдём трудоёмкость стандартного алгоритма.
+            
+            $ f_\text{первый цикл} = 2 + M(2 + f_\text{второй цикл})$  
+
+            $ f_\text{второй цикл} = 2 + Q(2 + f_\text{третий цикл})$  
+
+            $ f_\text{третий цикл} = 2 + N(2 + 11)$  
+
+            $ f_\text{Стандартный} = 13MNQ + 4MQ + 4M + 2 \approx 13MNQ$
+
+        \subsection{Алгоритм Винограда}
+            Найдём трудоёмкость алгоритма Винограда.
+            
+            $ f_\text{первый цикл} = 2 + M(2 + 2 + 3 + \frac{N}{2}(3 + 1 + 6 + 2 + 3)) = \frac{15}{2}MN + 7M + 2$
+            
+            $ f_\text{второй цикл} = \frac{15}{2}QN + 7Q + 2$
+
+            $ f_\text{третий цикл} = 2 + M(2 + 2 + Q(2 + 7 + 3 + \frac{N}{2}(3 + 1 + 12 + 5 + 5))) = 13MNQ + 12MQ + 4M + 2$
+
+            Условный переход $f_{if} = 2 + \left\{
+                \begin{matrix}
+                0 - \text{лучший случай},\\
+                15QM + 4M + 2 - \text{худший случай} 
+                \end{matrix}\right.$
+
+            Итого:
+            \begin{equation}
+                f_\text{Винограда} = 13MNQ + 12MQ + \frac{15}{2}(MN + QN) + 7(M + Q) + 4M + 8 + 
+                    \left\{ \begin{matrix}
+                    0 - \text{л.с.},\\
+                    15MQ + 4M + 2 - \text{х.с.} 
+                    \end{matrix}\right.
+            \end{equation}
+            $ f_\text{Винограда} \approx 13MNQ $
+        \subsection{оптимизированный алгоритм Винограда}
+
+            Найдём трудоёмкость алгоритма Винограда.
+                
+            $ f_\text{первый цикл}^* = 2 + M(2 + 2 + 2 + \frac{N}{2}(2 + 1 + 5 + 1 + 1)) = 10MN + 6M + 2$
+            
+            $ f_\text{второй цикл}^* = 10MN + 6M + 2$
+
+            $ f_\text{третий цикл}^* = 2 + M(2 + 2 + Q(2 + 6 + 2 + \frac{N}{2}(2 + 1 + 10 + 4 + 1))) = 9MNQ + 10MQ + 4M + 2$
+
+            Условный переход $f_{if}^* = 2 + \left\{
+                \begin{matrix}
+                0 - \text{лучший случай},\\
+                12QM + 4M + 2 - \text{худший случай} 
+                \end{matrix}\right.$
+
+            Итого:
+            \begin{equation}
+                f_\text{Винограда}^* = 9MNQ + 10MQ + \frac{15}{2}(MN + QN) + 6(M + Q) + 4M + 8 + 
+                    \left\{ \begin{matrix}
+                    0 - \text{л.с.},\\
+                    12MQ + 4M + 2 - \text{х.с.} 
+                    \end{matrix}\right.
+            \end{equation}
+            $ f_\text{Винограда}^* \approx 9MNQ $
+
+    \section{Вывод}
+        Несмотря на сложность алгоритма Винограда по сравнению со стандартным, доля умножения в нём меньше.
+        Стоит отметить, что алгоритм Винограда имеет худший (матрицы нечётной размерности) и лучший случаи (матрицы чётной размерности),
+        в то время как стандартный алгоритм не зависит от чётности размерности матриц.
+
+
+    \begin{figure}[h!]
+        \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                legend pos = north west,
+                grid = major,
+                xlabel = Размер матрицы,
+                ylabel = {Время, ns},
+                height = 0.5\paperheight, 
+                width = 0.75\paperwidth
+            ]
+            
+            \addplot table[x=n,y=std] {data/test1.dat};
+            \addplot table[x=n,y=vin] {data/test1.dat};
+            \addplot table[x=n,y=optVin] {data/test1.dat};
+            \legend{
+                Стандартный алгоритм,
+                Алгоритм Винограда,
+                оптимизированный алгоритм Винограда,
+            };
+            \end{axis}
+        \end{tikzpicture}
+        \caption{График зависимости времени работы алгоритмов при чётных размерностях матриц} 
+        \label{graph:test:1}
+    \end{figure}
+
+    \begin{figure}[h!]
+        \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                legend pos = north west,
+                grid = major,
+                xlabel = Размер матрицы,
+                ylabel = {Время, ns},
+                height = 0.5\paperheight, 
+                width = 0.75\paperwidth
+            ]
+            
+            \addplot table[x=n,y=std] {data/test2.dat};
+            \addplot table[x=n,y=vin] {data/test2.dat};
+            \addplot table[x=n,y=optVin] {data/test2.dat};
+            \legend{
+                Стандартный алгоритм,
+                Алгоритм Винограда,
+                оптимизированный алгоритм Винограда,
+            };
+            \end{axis}
+        \end{tikzpicture}
+        \caption{График зависимости времени работы алгоритмов при нечётных размерностях матриц} 
+        \label{graph:test:2}
+    \end{figure}
+
+\newpage
