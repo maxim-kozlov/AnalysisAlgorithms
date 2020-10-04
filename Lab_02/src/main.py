@@ -4,7 +4,6 @@ def TryDot(dot, *args, **kwargs):
     matr = [[]]
     try:
         matr, t = dot(*args, **kwargs)
-        # print("time work: ", t)
         print("result matrix: ")
         printMatrix(matr)
     except ValueError as e:

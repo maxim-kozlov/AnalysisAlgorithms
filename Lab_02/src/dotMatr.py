@@ -64,12 +64,14 @@ def dotMatrixVinogradOptimizate(matr_a : list, matr_b: list) -> (list, float):
     
     m = len(matr_a)
     n = len(matr_a[0])
+
     q = len(matr_b[0])
     matr_c = [[0] * q for i in range(m)]
 
     row = [0] * m
     col = [0] * q
     t_start = process_time()
+
     for i in range(m):
         for j in range(1, n, 2):
             row[i] -= matr_a[i][j] * matr_a[i][j - 1]
