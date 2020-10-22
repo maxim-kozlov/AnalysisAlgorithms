@@ -9,8 +9,8 @@
         он позволяет написать программу в относительно малый срок.
         В качестве среды разработки использовалась Visual Studio Code \cite{visual-studio-code}.
 
-        Для замера процессорного времени была использована функция process\_time\_ns \cite{process_time} модуля time.
-        Она возвращает время в наносекундах суммы системного и пользовательского процессорного времени текущего процесса и 
+        Для замера процессорного времени была использована функция process\_time \cite{process_time} модуля time.
+        Она возвращает значение в долях секунды суммы системного и пользовательского процессорного времени текущего процесса и 
         не включает время, прошедшее во время сна.
 
     \section{Листинг программы}
@@ -18,7 +18,7 @@
         \begin{enumerate}
             \item стандартной реализации (листинг \ref{lst:standartDot});
             \item реализация алгоритма Винограда (листинг \ref{lst:vinogradDot});
-            \item реализация оптимизированного алгоритма Винограда (листинг \ref{lst:vinogradDot:optimize});
+            \item реализация оптимизированного алгоритма Винограда (листинг \ref{lst:vinogradDot:optimize}).
         \end{enumerate}
         
         \begin{lstlisting}[language=python, label=lst:standartDot, caption=Реализация классического алгоритма умножения матриц]
@@ -26,17 +26,17 @@ def dotMatrix(matr_a : list, matr_b: list) -> (list, float):
     if (len(matr_b) != len(matr_a[0])):
         raise ValueError
     
-    n = len(matr_a)
-    m = len(matr_a[0])
+    m = len(matr_a)
+    n = len(matr_a[0])
     q = len(matr_b[0])
     matr_c = [[0] * q for i in range(m)]
 
-    t_start = process_time_ns()
-    for i in range(n):
+    t_start = process_time()
+    for i in range(m):
         for j in range(q):
-            for k in range(m):
+            for k in range(n):
                 matr_c[i][j] = matr_c[i][j] + matr_a[i][k] * matr_b[k][j]
-    t_end = process_time_ns()
+    t_end = process_time()
 
     return matr_c, t_end - t_start
         \end{lstlisting}
@@ -46,14 +46,17 @@ def dotMatrixVinograd(matr_a : list, matr_b: list) -> (list, float):
     if (len(matr_b) != len(matr_a[0])):
         raise ValueError
     
-    n = len(matr_a)
-    m = len(matr_a[0])
+    m = len(matr_a)
+    n = len(matr_a[0])
+
     q = len(matr_b[0])
     matr_c = [[0] * q for i in range(m)]
 
     row = [0] * m
     col = [0] * q
-    t_start = process_time_ns()
+
+    t_start = process_time()
+
     for i in range(m):
         for j in range(n // 2):
             row[i] = row[i] + matr_a[i][2*j] * matr_a[i][2*j + 1]
@@ -72,7 +75,7 @@ def dotMatrixVinograd(matr_a : list, matr_b: list) -> (list, float):
         for i in range(m):
             for j in range(q):
                 matr_c[i][j] = matr_c[i][j] + matr_a[i][n-1] * matr_b[n-1][j]
-    t_end = process_time_ns()
+    t_end = process_time()
 
     return matr_c, t_end - t_start
         \end{lstlisting}
@@ -82,14 +85,14 @@ def dotMatrixVinogradOptimizate(matr_a : list, matr_b: list) -> (list, float):
     if (len(matr_b) != len(matr_a[0])):
         raise ValueError
     
-    n = len(matr_a)
-    m = len(matr_a[0])
+    m = len(matr_a)
+    n = len(matr_a[0])
     q = len(matr_b[0])
     matr_c = [[0] * q for i in range(m)]
 
     row = [0] * m
     col = [0] * q
-    t_start = process_time_ns()
+    t_start = process_time()
     for i in range(m):
         for j in range(1, n, 2):
             row[i] -= matr_a[i][j] * matr_a[i][j - 1]
@@ -108,7 +111,7 @@ def dotMatrixVinogradOptimizate(matr_a : list, matr_b: list) -> (list, float):
         for i in range(m):
             for j in range(q):
                 matr_c[i][j] += matr_a[i][n-1] * matr_b[n-1][j]
-    t_end = process_time_ns()
+    t_end = process_time()
 
     return matr_c, t_end - t_start
         \end{lstlisting}
@@ -121,7 +124,8 @@ def dotMatrixVinogradOptimizate(matr_a : list, matr_b: list) -> (list, float):
         прохождение программы перечисленных тестов.
 
         \begin{table}[]
-            \caption{Тесты проверки корректности программы}
+            \caption{Тесты для проверки корректности программы}
+
             \centering
             \begin{tabular}{|c|c|c|}
                 \hline
@@ -133,6 +137,11 @@ def dotMatrixVinogradOptimizate(matr_a : list, matr_b: list) -> (list, float):
                 \end{tabular}
             \label{table:testing}
         \end{table}
-
-
+        
+        \begin{figure}[h!]
+            \centering
+            \includegraphics[scale=0.9]{testing.png}
+            \caption{Результаты тестирования алгоритмов: стандартного, Винограда и оптимизированного Винограда}
+            \label{png:testing:result}
+        \end{figure}
 \newpage
