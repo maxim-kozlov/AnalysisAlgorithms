@@ -1,0 +1,1 @@
+4-ая лабораторная выполнена в [курсаче по кг](https://github.com/maxim-kozlov/CP_CG)
