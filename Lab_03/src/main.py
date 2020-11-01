@@ -27,10 +27,10 @@ def getTime(arr, func, samples = 2):
 
 def testSort(arr, samples = 2):
     # getTime(arr, selection_sort, samples)
-    print(f"{len(arr):8} {getTime(arr, bubble_sort, samples):10.5f} {getTime(arr, insertion_sort, samples):10.5f} {1:10.5f}")
+    print(f"{len(arr):8} {getTime(arr, bubble_sort, samples):10.5f} {getTime(arr, insertion_sort, samples):10.5f} {getTime(arr, selection_sort, samples):10.5f}")
 
 def mode_test():
-    range_n = (10, 50, 100, 250, 500, 1000, 2500, 5000, 10000)
+    range_n = (10, 50, 100, 250, 500, 1000, 2500)
     for n in range_n:
         arr = [randint(-1000, 1000) for _ in range(n)]
         arr.sort()
