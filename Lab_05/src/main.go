@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"math/rand"
+	"os"
 	"time"
 )
 
@@ -10,35 +11,18 @@ func getTime() string {
 	return time.Now().Format("15:04:05.99999999")
 }
 
-func actionA(source <-chan int) <-chan int {
+type actionFunc func(int) int
+
+func action(source <-chan int, name string, f actionFunc) <-chan int {
 	result := make(chan int)
 
 	go func() {
 		defer close(result)
 
 		for arg := range source {
-			fmt.Print("time: ", getTime(), " in A: ", arg, "\n")
-			value := arg * arg
-			time.Sleep(100)
-			fmt.Print("time: ", getTime(), " out A: ", value, "\n")
-			result <- value
-		}
-	}()
-
-	return result
-}
-
-func actionB(source <-chan int) <-chan int {
-	result := make(chan int)
-
-	go func() {
-		defer close(result)
-
-		for arg := range source {
-			fmt.Print("time: ", getTime(), " in B: ", arg, "\n")
-			value := arg * arg
-			time.Sleep(2 * time.Second)
-			fmt.Print("time: ", getTime(), " out B: ", value, "\n")
+			fmt.Print("time: ", getTime(), " in  ", name, ": ", arg, "\n")
+			value := f(arg)
+			fmt.Print("time: ", getTime(), " out ", name, ": ", value, "\n")
 			result <- value
 		}
 	}()
@@ -62,8 +46,36 @@ func generate(n int) <-chan int {
 	return queue
 }
 
+func stepA(arg int) int {
+	time.Sleep(100)
+	return arg * arg
+}
+
+func stepB(arg int) int {
+	time.Sleep(200)
+	return arg * arg
+}
+
+func stepC(arg int) int {
+	time.Sleep(150)
+	return arg * arg
+}
+
 func main() {
-	for res := range actionB(actionA(generate(20))) {
-		fmt.Print("time: ", getTime(), " result: ", res, "\n")
+	var count int
+	fmt.Print("Enter generate count: ")
+	_, err := fmt.Scanf("%d", &count)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(-1)
+	}
+
+	var queue = generate(count)
+	queue = action(queue, "A", stepA)
+	queue = action(queue, "B", stepB)
+	queue = action(queue, "C", stepC)
+
+	for res := range queue {
+		fmt.Print("time: ", getTime(), " res: ", res, "\n")
 	}
 }
