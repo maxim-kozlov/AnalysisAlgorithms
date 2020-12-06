@@ -30,6 +30,14 @@ func action(source <-chan int, name string, f actionFunc) <-chan int {
 	return result
 }
 
+func linearAction(arg int, name string, f actionFunc) int {
+	fmt.Print("time: ", getTime(), " in  ", name, ": ", arg, "\n")
+	value := f(arg)
+	fmt.Print("time: ", getTime(), " out ", name, ": ", value, "\n")
+
+	return value
+}
+
 func generate(n int) <-chan int {
 	queue := make(chan int)
 
@@ -44,6 +52,12 @@ func generate(n int) <-chan int {
 	}()
 
 	return queue
+}
+
+func linearGenerate() int {
+	value := rand.Intn(100)
+	fmt.Print("time: ", getTime(), " send: ", value, "\n")
+	return value
 }
 
 func stepA(arg int) int {
@@ -61,6 +75,17 @@ func stepC(arg int) int {
 	return arg * arg
 }
 
+func conveyorRun(count int) {
+	var queue = generate(count)
+	queue = action(queue, "A", stepA)
+	queue = action(queue, "B", stepB)
+	queue = action(queue, "C", stepC)
+
+	for res := range queue {
+		fmt.Print("time: ", getTime(), " res: ", res, "\n")
+	}
+}
+
 func main() {
 	var count int
 	fmt.Print("Enter generate count: ")
@@ -70,12 +95,5 @@ func main() {
 		os.Exit(-1)
 	}
 
-	var queue = generate(count)
-	queue = action(queue, "A", stepA)
-	queue = action(queue, "B", stepB)
-	queue = action(queue, "C", stepC)
-
-	for res := range queue {
-		fmt.Print("time: ", getTime(), " res: ", res, "\n")
-	}
+	conveyorRun(count)
 }
