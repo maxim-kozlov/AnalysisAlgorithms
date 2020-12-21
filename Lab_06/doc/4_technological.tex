@@ -8,10 +8,6 @@
         он позволяет написать программу в относительно малый срок.
         В качестве среды разработки использовалась Visual Studio Code \cite{visual-studio-code}. 
 
-        % Для замера процессорного времени была использована функция process\_time модуля time \cite{process_time}. 
-        % Она возвращает значение в долях секунды суммы системного и пользовательского процессорного времени текущего процесса и 
-        % не включает время, прошедшее во время сна.
-
     \section{Листинг программы}
         Ниже представлены листинги кода алгоритмов:
         \begin{enumerate}
@@ -180,20 +176,18 @@ public class AntsAlgorithm : IRouteAlgorithm
         представленные на рисунке \ref{png:testing:result}, подтверждают
         прохождение программы перечисленных тестов.
         
-        $\begin{bmatrix}
-			0 & 3 & 1 & 6 & 8\\
-			3 & 0 & 4 & 1 & 0\\
-			1 & 4 & 0 & 5 & 0\\
-			6 & 1 & 5 & 6 & 1\\
-			8 & 0 & 0 & 1 & 0
-        \end{bmatrix}$ 
-        
-        $\begin{bmatrix}
-			0 & 10 & 15 & 20\\
-			10 & 0 & 35 & 25\\
-			15 & 35 & 0 & 30\\
-			20 & 25 & 30 & 0
-		\end{bmatrix}$
+        \begin{table}[]
+            \caption{Тесты для проверки корректности программы}
+            
+            \centering
+            \begin{tabular}{|c|c|}
+            \hline
+            Матрица смежности                                                                                    & \begin{tabular}[c]{@{}c@{}}Минимальное\\ расстояние\end{tabular} \\ \hline
+            $\begin{bmatrix} 0 & 10\\ 10 & 0 \end{bmatrix}$                                                      & 20                                                               \\ \hline
+            $\begin{bmatrix}0 & 10 & 15 & 20\\10 & 0 & 35 & 25\\15 & 35 & 0 & 30\\20 & 25 & 30 & 0\end{bmatrix}$ & 80                                                               \\ \hline
+            \end{tabular}
+            \label{table:testing}
+        \end{table}
 
         \begin{figure}[h!]
             \centering

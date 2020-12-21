@@ -11,7 +11,7 @@ namespace Lab_06
             Path shortest = new Path(null, map);
             foreach (var cur in GetAllRoutes(map.N))
             {
-                cur.Add(0);
+                cur.Add(cur[0]);
                 Path check = new Path(cur, map);
                 if (shortest.Distance > check.Distance)
                     shortest = check;
@@ -25,6 +25,7 @@ namespace Lab_06
             for (int i = 0; i < count; i++)
                 cur.Add(i);
 
+            yield return new List<int>(cur);
             while (NextSet(cur, count))
                 yield return new List<int>(cur);
         }

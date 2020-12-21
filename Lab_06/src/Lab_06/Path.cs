@@ -53,7 +53,7 @@ namespace Lab_06
         {
             var stringBuilder = new StringBuilder();
             foreach (int num in _path)
-                stringBuilder.AppendFormat("{0:3} ", num);
+                stringBuilder.AppendFormat("{0} ", num);
             return stringBuilder.ToString();
         }
     }

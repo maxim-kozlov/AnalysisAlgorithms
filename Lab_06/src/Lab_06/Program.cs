@@ -14,7 +14,7 @@ namespace Lab_06
 
             int n = 4; //Convert.ToInt32(Console.ReadLine());
 
-            var map = new Map(n, 25);
+            var map = new Map(@"C:\Users\mad-m\source\repos\BMSTU\AnalysisAlgorithms\Lab_06\src\Lab_06\data\map2.txt");
             Console.WriteLine(map);
 
             foreach (var routeAlgorithm in routeAlgorithms)

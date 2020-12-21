@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Lab_06
 {
@@ -22,6 +24,27 @@ namespace Lab_06
             }
         }
 
+        public Map(string namefile)
+        {
+            using (var file = new StreamReader(namefile))
+            {
+                var line = file.ReadLine();
+                var data = Regex.Replace(line, "[ ]+", " ").Split();
+                dist = new int[data.Length, data.Length];
+                for (int i = 0; i < N; i++)
+                {
+                    for (int j = 0; j < N; j++)
+                    {
+                        dist[i, j] = Convert.ToInt32(data[j]);
+                    }
+                    
+                    line = file.ReadLine();
+                    if (line != null)
+                        data = Regex.Replace(line, "[ ]+", " ").Split();
+                }
+            }
+        }
+
         public int this[int i, int j]
         {
             get => dist[i, j];
@@ -37,7 +60,7 @@ namespace Lab_06
             {
                 for (int j = 0; j < N; j++)
                 {
-                    stringBuilder.AppendFormat("{0:6} ", dist[i, j]);
+                    stringBuilder.AppendFormat("{0} ", dist[i, j]);
                 }
                 stringBuilder.Append("\n");
             }
