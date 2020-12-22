@@ -6,36 +6,48 @@ namespace Lab_06
 {
     public class AntsAlgorithm : IRouteAlgorithm
     {
-        public AntsAlgorithm(int maxTime, double alpha, double beta, double q, double pho)
+        private readonly Random r = new Random();
+        public AntsAlgorithm(int maxTime, double alpha, double beta, double q, double rho)
         {
             MaxTime = maxTime;
             Alpha = alpha;
             Beta = beta;
             Q = q;
-            Pho = pho;
+            Rho = rho;
         }
 
         public int MaxTime { get; set; }
         public double Alpha { get; set; }
         public double Beta { get; set; }
         public double Q { get; set; }
-        public double Pho { get; set; }
+        public double Rho { get; set; }
 
+        public static double CalculateQ(Map map)
+        {
+            double sum = 0;
+            for (int i = 0; i < map.N; i++)
+            {
+                for (int j = i + 1; j < map.N; j++)
+                {
+                    sum += 2 * map[i, j];
+                }
+            }
+            return sum / map.N;
+        }
 
         public Path GetRoute(Map map)
         {
-            Random r = new Random();
             Path shortest = new Path(null, map);
 
             int count = map.N;
-            double[,] pher = InitPheromone(0.1, count);
+            var pher = InitPheromone(count, 0.1);
 
             for (int time = 0; time < MaxTime; time++)
             {
-                var ants = InitAnts(map);
+                var ants = InitAnts(map, map.N);
                 for (int i = 0; i < count - 1; i++)
                 {
-                    double[,] deltaPher = InitPheromone(0, count);
+                    double[,] deltaPher = InitPheromone(count, 0);
                     foreach (var ant in ants)
                     {
                         int curTown = ant.LastVisited();
@@ -67,10 +79,14 @@ namespace Lab_06
                         ant.VisitTown(newTown);
                         deltaPher[curTown, newTown] += Q / map[curTown, newTown];
                     }
+
+                    // Испарение феромонов
                     for (int k = 0; k < count; k++)
                         for (int t = 0; t < count; t++)
-                            pher[k, t] = (1 - Pho) * pher[k, t] + deltaPher[k, t];
+                            pher[k, t] = (1 - Rho) * pher[k, t] + deltaPher[k, t];
                 }
+
+                // Находим минимальные пути тек. дня
                 foreach (var ant in ants)
                 {
                     ant.VisitTown(ant.Start);
@@ -82,15 +98,15 @@ namespace Lab_06
             return shortest;
         }
 
-        private List<Ant> InitAnts(Map map)
+        private List<Ant> InitAnts(Map map, int n)
         {
-            var ants = new List<Ant>(map.N);
-            for (int i = 0; i < map.N; i++)
-                ants.Add(new Ant(map, i));
+            var ants = new List<Ant>(n);
+            for (int i = 0; i < n; i++)
+                ants.Add(new Ant(map, 0));
             return ants;
         }
 
-        private double[,] InitPheromone(double num, int size)
+        private double[,] InitPheromone(int size, double num)
         {
             double[,] phen = new double[size, size];
             for (int i = 0; i < size; i++)
