@@ -83,7 +83,10 @@ namespace Lab_06
                     // Испарение феромонов
                     for (int k = 0; k < count; k++)
                         for (int t = 0; t < count; t++)
+                        {
                             pher[k, t] = (1 - Rho) * pher[k, t] + deltaPher[k, t];
+                            if (pher[k, t] < 0.1) pher[k, t] = 0.1;
+                        }
                 }
 
                 // Находим минимальные пути тек. дня
